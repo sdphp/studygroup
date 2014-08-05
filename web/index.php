@@ -18,4 +18,7 @@ if (class_exists($class)) {
         $response->prepare($request);
         $response->send();
     }
+} else {
+    $html = '<html><body><h1>Page Not Found</h1></body></html>';
+    $response = new Response($html, Response::HTTP_NOT_FOUND);
 }
