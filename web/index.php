@@ -4,25 +4,28 @@
  *
  * This is a basic example aimed to understand the following concepts:
  *
- * 1) what is an HTTP request
- * 2) what is an HTTP response
- * 3) How to handle a request and generate a response using plane PHP
- * 4) How to handle a request and generate a response using Symfony's HTTP Foundation component
- * 5) Understand the basic steps involved during the process of converting a request into a response
+ * 1) Symfony Routing
+ * 2) Basic HTTPKernel workflow
+ * 3) Resolving Controller
+ * 4) Resolving Arguments
+ * 5) Advanced use of controllers
  *
- * NOTE 1: this front controller step 1-6 LOOSELY follows the Symfony HTTPKernel Component process described here:
+ * NOTE 1: this front controller step 1-6 loosely follows the Symfony HTTPKernel Component process described here:
  * {@link http://symfony.com/doc/current/components/http_kernel/introduction.html HTTPKernel Component}
- * NOTE 2: this code should not be used in a real application.
+ * NOTE 2: this code SHOULD NOT be used in ANY application.
  *
  * Also see:
- * @link http://slides.com/onema/http-protocol#/
- * @link http://symfony.com/doc/current/components/http_foundation/introduction.html
+ * @link http://fabien.potencier.org/article/55/create-your-own-framework-on-top-of-the-symfony2-components-part-6
  */
 
 require_once "../vendor/autoload.php";
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 
 $request = Request::createFromGlobals();
@@ -30,56 +33,76 @@ $request = Request::createFromGlobals();
 /***************************************
  * STEP 1 ROUTING
  * figure out information about the
- * request. In this case we only use
- * the path.
+ * request. We are now using the router
+ * component to get more
+ * information about the request.
+ *
+ * We are also decoupling the routes
+ * from our front controller, making
+ * routes more flexible and powerful.
  ***************************************/
 
-// Get the resource path e.g. /HelloWorld
-$path = $request->getPathInfo();
+// Get the routing information
+include __DIR__ . '/../app/config/routing.php';
+$context = new RequestContext();
+$context->fromRequest($request);
+$matcher = new UrlMatcher($routes, $context);
 
-/***************************************
- * STEP 2 RESOLVE THE CONTROLLER
- * We use the information from STEP 1
- * to figure out what class (controller)
- * we will be using to handle the
- * request and return a response.
- * NOTE: Unlike symfony2 this step will not
- * return a callable.
- ***************************************/
+// extract all the values returned by the match method into variables.
+// in this case the result will be a $_controller, $_route, and $lang variables.
+$parameters = $matcher->match($request->getPathInfo());
 
-// Remove forward slashes and append to controller namespace
-// The result will be a fully qualified class name: namespace+class
-$class = '\SDPHP\StudyGroup01\Controller\\' . trim($path, '/');
+// Extract is used to import into the symbol table variables contained in an associative array.
+//extract($parameters, EXTR_SKIP);
 
+// This is a bit clear as match returns an array containing the keys listed below.
+list($lang, $_controller, $_route) = array_values($parameters);
 
-if (class_exists($class)) {
+// Add a specific attribute to the request with the language
+// @todo WHAT IS WRONG WITH THIS PARTICULAR STEP?
+$request->attributes->add(array('lang' => $lang));
+
+try {
+    /***************************************
+     * STEP 2 RESOLVE THE CONTROLLER
+     * We use the matcher from STEP 1
+     * to determine and prepare the
+     * controller we will be using to
+     * handle the request and return a
+     * response.
+     ***************************************/
+    $controller = $_controller[0];
+    $method     = $_controller[1];
+
 
     /***************************************
      * STEP 3 INITIALIZE CONTROLLER
-     * In this step we initialize the
-     * controller that will handle the
-     * request.
+     * In this step we can change the
+     * controller right before is executed.
+     * We have no need to modify the
+     * controller for this version of the
+     * application.
+     *
+     * If required this step could change
+     * the controller completely.
      ***************************************/
 
-    // Check if the class exists and if so create an new
-    // instance of the class and call the "action" method
-    $controller = new $class();
 
     /***************************************
      * STEP 4 RESOLVE ARGUMENTS
      * We are not resolving anything
      * here, because our simple application
-     * only deals with one method per
-     * controller, and this method only
-     * should accept one parameter.
+     * only accepts one parameter: a request
+     * object.
+     *
+     * @todo HOW CAN WE RESOLVE MORE THAN ONE ARGUMENT HERE?
      ***************************************/
 
-    // NO STEP 4 IS IMPLEMENTED IN THIS APP
 
     /***************************************
      * STEP 5 CALL CONTROLLER
      * we call the controller using the
-     * object created in step 3. The controller
+     * object created in step 2. The controller
      * should create a response for the
      * given request. The process of creating
      * the response is up to the developer
@@ -89,15 +112,21 @@ if (class_exists($class)) {
      * view (templating engine) to generate
      * a response in the proper format.
      ***************************************/
-    $response = $controller->action($request);
+    $response = $controller->$method($request);
 
-} else {
-    // The class doesn't exist; we still need to deal with the request.
-    // Create a body with a Not Found message and send back with the
-    // Appropriate code: 404 NOT FOUND.
-    $html = '<html><body><h1>Page Not Found</h1></body></html>';
-    $response = new Response($html, Response::HTTP_NOT_FOUND);
+} catch (ResourceNotFoundException $e) {
+
+    /**
+     * @todo WHAT IS WRONG WITH THESE EXCEPTIONS? HINT: THINK ABOUT SECURITY!
+     */
+    $response = new Response('Not Found: ' . $e->getMessage(), 404);
+
+} catch (\Exception $e) {
+
+    $response = new Response('An error occurred: ' . $e->getMessage(), 500);
+
 }
+
 /***************************************
  * STEP 6 SEND A RESPONSE BACK
  * Use the prepare method to ensure that
@@ -106,11 +135,5 @@ if (class_exists($class)) {
  * to the client.
  ***************************************/
 
-// This IF only exist because we deal with responses in two ways
-// 1. we use plain PHP and return false to identify that no object was returned
-// 2. we use objects (Symfony's HTTP Foundation)
-// From now on we will use
-if ($response) {
-    $response->prepare($request);
-    $response->send();
-}
+$response->prepare($request);
+$response->send();
