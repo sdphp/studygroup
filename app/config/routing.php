@@ -31,3 +31,35 @@ $routes->add(
 
         )
     ));
+
+$routes->add(
+    'hello_inject_two_parameters',          // NAME THE ROUTE
+    new Route(                              // CREATE A NEW ROUTE OBJECT
+        '/hello/inject/two/{lang}',         // CHOOSE A PATH AND WILDCARD
+        array(
+            'lang' => false,                // WILDCARD DEFAULT VALUE
+                                            // SPECIFY CONTROLLER AND METHOD, DOES NOT INSTANTIATE OBJECT UNTIL NEEDED
+            '_controller' => 'SDPHP\StudyGroup02\Controller\HelloWorldController::twoParametersAction',
+
+        )
+    ));
+
+$routes->add(
+    'test_error_no_controller',
+    new Route(
+        '/test/no/controller',
+        array(
+            '_controller' => 'SDPHP\StudyGroup\NoController::noMethod'
+        )
+    )
+);
+
+$routes->add(
+    'test_error_no_method',
+    new Route(
+        '/test/no/method',
+        array(
+            '_controller' => 'SDPHP\StudyGroup02\Controller\HelloWorldController::noMethod',
+        )
+    )
+);
