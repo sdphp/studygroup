@@ -60,7 +60,7 @@ $parameters = $matcher->match($request->getPathInfo());
 
 // Here we have resolved a problem found in the previous front controller
 // @todo WHY IS THIS BETTER THAN ADDING OUR OWN ATTRIBUTES?
-$request->attributes->add($matcher->match($request->getPathInfo()));
+$request->attributes->add($parameters);
 
 try {
     /***************************************
