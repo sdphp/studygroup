@@ -45,9 +45,18 @@ $request = Request::createFromGlobals();
 
 // Get the resource path e.g. /HelloWorld
 include __DIR__ . '/../app/config/routing.php';
+
+// Context holds information about a request
 $context = new RequestContext();
 $context->fromRequest($request);
+
+// Matches a URL path with a set of routes
 $matcher = new UrlMatcher($routes, $context);
+
+// Here we match a path with a route. Match will return an array holding all the
+// information about the route, in this case the result be an array containing a
+// _controller, _route, and lang keys.
+$parameters = $matcher->match($request->getPathInfo());
 
 // Here we have resolved a problem found in the previous front controller
 // @todo WHY IS THIS BETTER THAN ADDING OUR OWN ATTRIBUTES?
