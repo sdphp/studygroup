@@ -73,6 +73,18 @@ class HelloWorldController
     }
 
     /**
+     * Using the route hello_improved_two_parameters we can inject the {lang} parameter to this method
+     *
+     * @param Request $request
+     * @param $lang
+     */
+    public function twoParametersAction(Request $request, $lang)
+    {
+        $language = $lang;
+        $this->translateAction($request);
+    }
+
+    /**
      * Set the language value in a cookie.
      * This is use to remember the language preference of the user.
      *
