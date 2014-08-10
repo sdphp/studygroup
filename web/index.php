@@ -42,20 +42,27 @@ $request = Request::createFromGlobals();
  * routes more flexible and powerful.
  ***************************************/
 
-// Get the routing information
+// Get the routing information, will initialize the $routes object.
 include __DIR__ . '/../app/config/routing.php';
+
+// Context holds information about a request
 $context = new RequestContext();
 $context->fromRequest($request);
+
+// Matches a URL path with a set of routes
 $matcher = new UrlMatcher($routes, $context);
 
-// extract all the values returned by the match method into variables.
-// in this case the result will be a $_controller, $_route, and $lang variables.
+// Here we match a path with a route. Match will return an array holding all the
+// information about the route, in this case the result be an array containing a
+// _controller, _route, and lang keys.
 $parameters = $matcher->match($request->getPathInfo());
 
 // Extract is used to import into the symbol table variables contained in an associative array.
+// This would automatically create variables using the names of the associative array. For the
+// sake of clarity we abstain of using this method.
 //extract($parameters, EXTR_SKIP);
 
-// This is a bit clear as match returns an array containing the keys listed below.
+// This is a bit more clear as match returns an array containing lang, _controller and _route.
 list($lang, $_controller, $_route) = array_values($parameters);
 
 // Add a specific attribute to the request with the language
