@@ -77,11 +77,12 @@ class HelloWorldController
      *
      * @param Request $request
      * @param $lang
+     * @return Response
      */
-    public function twoParametersAction(Request $request, $lang)
+    public function twoParametersAction($lang, Request $request, $something = 'lalala')
     {
-        $language = $lang;
-        $this->translateAction($request);
+        $language = $something;
+        return $this->translateAction($request);
     }
 
     /**
