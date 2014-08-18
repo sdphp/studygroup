@@ -10,7 +10,9 @@
     "autoload": {
         "psr-4": {
             "SDPHP\\StudyGroup01\\Controller\\": "src/SDPHP/StudyGroup01",
-            "SDPHP\\StudyGroup02\\Controller\\": "src/SDPHP/StudyGroup02"
+            "SDPHP\\StudyGroup02\\Controller\\": "src/SDPHP/StudyGroup02",
+            "SDPHP\\StudyGroup03\\": "src/SDPHP/StudyGroup03",
+            "SDPHP\\SGFramework\\": "src/SDPHP/SGFramework"
         }
     }
 }
