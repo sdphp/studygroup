@@ -14,7 +14,7 @@ $routes->add(
             '_controller' => array(         // CONTROLLER OPTIONS
                 // @todo WHY IS THIS BAD?!
                                             // CREATE A NEW CONTROLLER
-                new \SDPHP\StudyGroup02\Controller\HelloWorldController(),
+                new \SDPHP\StudyGroup03\Controller\HelloWorldController(),
                 'translateAction'           // OBJECT METHOD THAT SHOULD BE CALLED
             )
         )
@@ -27,7 +27,7 @@ $routes->add(
         array(
             'lang' => false,                // WILDCARD DEFAULT VALUE
                                             // SPECIFY CONTROLLER AND METHOD, DOES NOT INSTANTIATE OBJECT UNTIL NEEDED
-            '_controller' => 'SDPHP\StudyGroup02\Controller\HelloWorldController::translateAction',
+            '_controller' => 'SDPHP\StudyGroup03\Controller\HelloWorldController::translateAction',
 
         )
     ));
@@ -39,7 +39,7 @@ $routes->add(
         array(
             'lang' => false,                // WILDCARD DEFAULT VALUE
                                             // SPECIFY CONTROLLER AND METHOD, DOES NOT INSTANTIATE OBJECT UNTIL NEEDED
-            '_controller' => 'SDPHP\StudyGroup02\Controller\HelloWorldController::twoParametersAction',
+            '_controller' => 'SDPHP\StudyGroup03\Controller\HelloWorldController::twoParametersAction',
 
         )
     ));
@@ -59,7 +59,7 @@ $routes->add(
     new Route(
         '/test/no/method',
         array(
-            '_controller' => 'SDPHP\StudyGroup02\Controller\HelloWorldController::noMethod',
+            '_controller' => 'SDPHP\StudyGroup03\Controller\HelloWorldController::noMethod',
         )
     )
 );
