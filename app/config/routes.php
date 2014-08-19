@@ -53,7 +53,7 @@ $routes->add(
     new Route(
         '/test/no/controller',
         array(
-            '_controller' => 'SDPHP\StudyGroup\NoController::noMethod'
+            '_controller' => 'SDPHP\StudyGroup02\NoController::noMethod'
         )
     )
 );
@@ -63,7 +63,9 @@ $routes->add(
     new Route(
         '/test/no/method',
         array(
-            '_controller' => 'SDPHP\StudyGroup03\Controller\HelloWorldController::noMethod',
+            '_controller' => 'SDPHP\StudyGroup02\Controller\HelloWorldController::noMethod',
         )
     )
 );
+
+return $routes;
