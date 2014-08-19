@@ -117,6 +117,9 @@ class SGFramework implements HttpKernelInterface
              * @todo HOW CAN WE RESOLVE MORE THAN ONE ARGUMENT HERE?
              ***************************************/
 
+            $event->setArgument('controller', $controller[0]);
+            $event->setArgument('controller_method', $controller[1]);
+            $this->dispatcher->dispatch('framework.before_controller', $event);
 
             /***************************************
              * STEP 4 RESOLVE ARGUMENTS
@@ -167,6 +170,8 @@ class SGFramework implements HttpKernelInterface
             $response = new Response('An error occurred: ' . $e->getMessage(), 500);
 
         }
+
+        $this->dispatcher->dispatch('framework.after_controller', $event);
 
         $event->setArgument('response', $response);
         $this->dispatcher->dispatch('framework.response', $event);
