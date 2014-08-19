@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Juan Manuel Torres <kinojman@gmail.com>
  * @copyright (c) 2014, onema.io
  */
-class TestEvent implements EventSubscriberInterface
+class TestSubscriber implements EventSubscriberInterface
 {
 
     public static function getSubscribedEvents()
