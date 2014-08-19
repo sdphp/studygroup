@@ -28,7 +28,8 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use SDPHP\StudyGroup03\Event\TestEvent;
+use SDPHP\StudyGroup03\Event\TestSubscriber;
+use SDPHP\StudyGroup03\Event\BeforeAfterSubscriber;
 use SDPHP\SGFramework\SGFramework;
 
 $request = Request::createFromGlobals();
@@ -59,7 +60,8 @@ $resolver = new ControllerResolver();
 // Subscribers tell the dispatcher which events they want to
 // listen to
 $dispatcher = new EventDispatcher();
-$dispatcher->addSubscriber(new TestEvent());
+$dispatcher->addSubscriber(new TestSubscriber());
+$dispatcher->addSubscriber(new BeforeAfterSubscriber());
 
 // Any callable can be added to the dispatcher. Below is an
 // example of how to add a specific class method as a listener.
@@ -72,7 +74,7 @@ $dispatcher->addSubscriber(new TestEvent());
 $framework = new SGFramework($dispatcher, $matcher, $resolver);
 
 // Add HTTP Caching
-//$framework = new HttpCache($framework, new Store(__DIR__.'/../app/cache'));
+$framework = new HttpCache($framework, new Store(__DIR__.'/../app/cache'));
 
 $response = $framework->handle($request);
 

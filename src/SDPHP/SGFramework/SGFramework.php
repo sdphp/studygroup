@@ -113,10 +113,11 @@ class SGFramework implements HttpKernelInterface
              *
              * If required this step could change
              * the controller completely.
-             *
-             * @todo HOW CAN WE RESOLVE MORE THAN ONE ARGUMENT HERE?
              ***************************************/
 
+            $event->setArgument('controller', $controller[0]);
+            $event->setArgument('controller_method', $controller[1]);
+            $this->dispatcher->dispatch('framework.before_controller', $event);
 
             /***************************************
              * STEP 4 RESOLVE ARGUMENTS
@@ -154,6 +155,7 @@ class SGFramework implements HttpKernelInterface
              * a response in the proper format.
              ***************************************/
             $response = call_user_func_array($controller, $arguments);
+            $this->dispatcher->dispatch('framework.after_controller', $event);
 
         } catch (ResourceNotFoundException $e) {
 
