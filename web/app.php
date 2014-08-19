@@ -24,10 +24,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\Loader\PhpFileLoader;
+use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Config\FileLocator;
 use SDPHP\StudyGroup03\Event\TestSubscriber;
 use SDPHP\StudyGroup03\Event\BeforeAfterSubscriber;
 use SDPHP\SGFramework\SGFramework;
@@ -46,8 +49,17 @@ $request = Request::createFromGlobals();
  * routes more flexible and powerful.
  ***************************************/
 
-// Get the resource path e.g. /HelloWorld
-include __DIR__ . '/../app/config/routing.php';
+// NEW!!! Using the Symfony2 Config Component
+// Load routes Using file loaders. This will enable us to
+// change the routing configuration fom PHP to YAML or XML!
+$locator = new FileLocator(array(__DIR__ . '/../app/config'));
+$loader = new PhpFileLoader($locator);
+$routes = $loader->load('routes.php');
+
+// Use the YAML file loader to load and parse routes from YAML
+// This requires the YAML component and is not installed by default
+//$loader = new YamlFileLoader($locator);
+//$routes = $loader->load('routes.yml');
 
 // Context holds information about a request
 $context = new RequestContext();
