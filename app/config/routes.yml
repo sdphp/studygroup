@@ -1,0 +1,23 @@
+# routes.yml
+hello_lang:
+    path: /hello/{lang}
+    defaults:
+        lang: false
+        _controller: 'SDPHP\StudyGroup03\Controller\HelloWorldController::translateAction'
+    requirements:
+        name: .+
+
+hello_inject_two_parameters:
+    path: /hello/inject/two/{lang}
+    defaults:
+        lang: false
+        _controller: 'SDPHP\StudyGroup02\Controller\HelloWorldController::twoParametersAction'
+
+demo_error_no_controller:
+    path: /test/no/controller
+    defaults: { _controller: 'SDPHP\StudyGroup02\NoController::noMethod' }
+
+
+demo_error_no_method:
+    path: /test/no/method
+    defaults: { _controller: 'SDPHP\StudyGroup02\Controller\HelloWorldController::noMethod' }
