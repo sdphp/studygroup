@@ -8,6 +8,7 @@
         "symfony/routing":              "~2.5",
         "symfony/config":               "~2.5",
         "symfony/yaml":                 "~2.5",
+        "symfony/dependency-injection": "~2.5",
         "phpunit/phpunit":              "~4.2",
         "phpunit/php-code-coverage":    "~2.0"
     },
