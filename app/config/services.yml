@@ -1,0 +1,12 @@
+parameters:
+    car.make: Ford
+    car.size: 4
+services:
+    person_driver.class:
+        class: \SDPHP\StudyGroup07\Person
+        arguments: ["Joe", "driver"]
+    car:
+        class: \SDPHP\StudyGroup07\Car
+        arguments: ["%car.make%", "%car.size%"]
+        calls:
+            - [addPerson, ["@person_driver.class"] ]
