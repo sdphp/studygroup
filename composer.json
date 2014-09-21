@@ -2,18 +2,19 @@
     "require": {
         "php": ">=5.4",
         "guzzlehttp/guzzle": "~4.0",
-        "symfony/http-foundation":  "~2.5",
-        "symfony/http-kernel":      "~2.5",
-        "symfony/event-dispatcher": "~2.5",
-        "symfony/routing":          "~2.5",
-        "symfony/config":           "~2.5",
-        "symfony/yaml":             "~2.5"
+        "symfony/http-foundation":      "~2.5",
+        "symfony/http-kernel":          "~2.5",
+        "symfony/event-dispatcher":     "~2.5",
+        "symfony/routing":              "~2.5",
+        "symfony/config":               "~2.5",
+        "symfony/yaml":                 "~2.5"
     },
     "autoload": {
         "psr-4": {
             "SDPHP\\StudyGroup01\\Controller\\": "src/SDPHP/StudyGroup01",
             "SDPHP\\StudyGroup02\\Controller\\": "src/SDPHP/StudyGroup02",
             "SDPHP\\StudyGroup03\\": "src/SDPHP/StudyGroup03",
+            "SDPHP\\StudyGroup05\\": "src/SDPHP/StudyGroup05",
             "SDPHP\\SGFramework\\": "src/SDPHP/SGFramework"
         }
     }
