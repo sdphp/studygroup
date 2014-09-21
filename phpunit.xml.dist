@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true"
+         bootstrap="test/bootstrap.php">
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <directory>./test/SDPHP/Test/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
