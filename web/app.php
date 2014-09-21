@@ -31,11 +31,13 @@ use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Config\FileLocator;
-use SDPHP\StudyGroup03\Event\TestSubscriber;
-use SDPHP\StudyGroup03\Event\BeforeAfterSubscriber;
+use Symfony\Component\HttpFoundation\Session\Session;
+use SDPHP\StudyGroup05\Event\TestSubscriber;
+use SDPHP\StudyGroup05\Event\BeforeAfterSubscriber;
 use SDPHP\SGFramework\SGFramework;
 
 $request = Request::createFromGlobals();
+//DELETE THIS! $request->setSession(new Session(new ))
 
 /***************************************
  * STEP 1 ROUTING
@@ -53,13 +55,14 @@ $request = Request::createFromGlobals();
 // Load routes Using file loaders. This will enable us to
 // change the routing configuration fom PHP to YAML or XML!
 $locator = new FileLocator(array(__DIR__ . '/../app/config'));
-$loader = new PhpFileLoader($locator);
-$routes = $loader->load('routes.php');
+//$loader = new PhpFileLoader($locator);
+//$routes = $loader->load('routes.php');
 
 // Use the YAML file loader to load and parse routes from YAML
 // This requires the YAML component and is not installed by default
-//$loader = new YamlFileLoader($locator);
-//$routes = $loader->load('routes.yml');
+$loader = new YamlFileLoader($locator);
+$routes = $loader->load('routes.yml');
+$request->setSession(new Session());
 
 // Context holds information about a request
 $context = new RequestContext();
