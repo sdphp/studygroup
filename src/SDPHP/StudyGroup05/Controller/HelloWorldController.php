@@ -107,7 +107,7 @@ class HelloWorldController
      * Get the value of the language stored in a cookie. If none is set
      * "ES" will be returned as default value.
      *
-     * @param Request $request
+     * @param SessionInterface $session
      * @return string Returns ES as default value.
      */
     private function getLanguageFromSession(SessionInterface $session)
