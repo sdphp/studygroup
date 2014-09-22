@@ -3,7 +3,7 @@ hello_lang:
     path: /hello/{lang}
     defaults:
         lang: false
-        _controller: 'SDPHP\StudyGroup05\Controller\HelloWorldController::translateAction'
+        _controller: 'hello_translation.controller:translateAction'
     requirements:
         name: .+
 
