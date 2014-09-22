@@ -10,34 +10,29 @@
  * 4) Resolving Arguments
  * 5) Advanced use of controllers
  *
- * NOTE 1: this front controller step 1-6 loosely follows the Symfony HTTPKernel Component process described here:
- * {@link http://symfony.com/doc/current/components/http_kernel/introduction.html HTTPKernel Component}
- * NOTE 2: this code could be used in a simple application.
- *
  * Also see:
- * @link http://fabien.potencier.org/article/55/create-your-own-framework-on-top-of-the-symfony2-components-part-6
+ * @link http://fabien.potencier.org/article/55/create-your-own-framework-on-top-of-the-symfony2-components-part-11
  */
 
 require_once "../vendor/autoload.php";
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\Loader\PhpFileLoader;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\HttpKernel\HttpCache\HttpCache;
-use Symfony\Component\HttpKernel\HttpCache\Store;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Routing\Loader\YamlFileLoader as RoutingLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader as ServiceLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Session\Session;
-use SDPHP\StudyGroup05\Event\TestSubscriber;
-use SDPHP\StudyGroup05\Event\BeforeAfterSubscriber;
-use SDPHP\SGFramework\SGFramework;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 $request = Request::createFromGlobals();
-//DELETE THIS! $request->setSession(new Session(new ))
+$request->setSession(new Session());
+$locator = new FileLocator(realpath(__DIR__ . '/../app/config'));
+
+$container = new ContainerBuilder();
+$serviceLoader = new ServiceLoader($container, $locator);
+$serviceLoader->load('services.yml');
+$container->register('service_container', $container);
+
 
 /***************************************
  * STEP 1 ROUTING
@@ -51,46 +46,18 @@ $request = Request::createFromGlobals();
  * routes more flexible and powerful.
  ***************************************/
 
-// NEW!!! Using the Symfony2 Config Component
-// Load routes Using file loaders. This will enable us to
-// change the routing configuration fom PHP to YAML or XML!
-$locator = new FileLocator(array(__DIR__ . '/../app/config'));
-//$loader = new PhpFileLoader($locator);
-//$routes = $loader->load('routes.php');
-
-// Use the YAML file loader to load and parse routes from YAML
-// This requires the YAML component and is not installed by default
-$loader = new YamlFileLoader($locator);
+// Load routes and set them as a parameter in the container
+$loader = new RoutingLoader($locator);
 $routes = $loader->load('routes.yml');
-$request->setSession(new Session());
-
-// Context holds information about a request
-$context = new RequestContext();
-$context->fromRequest($request);
-
-$matcher = new UrlMatcher($routes, $context);
-$resolver = new ControllerResolver();
-
-// Create a new Event Dispatcher and add a custom subscriber,
-// Subscribers tell the dispatcher which events they want to
-// listen to
-$dispatcher = new EventDispatcher();
-$dispatcher->addSubscriber(new TestSubscriber());
-$dispatcher->addSubscriber(new BeforeAfterSubscriber());
-
-// Any callable can be added to the dispatcher. Below is an
-// example of how to add a specific class method as a listener.
-// We must specify the events to listen for.
-//$testEvent = new TestEvent();
-//$dispatcher->addListener('framework.request',  array($testEvent, 'onFrameworkRequest'));
-//$dispatcher->addListener('framework.response', array($testEvent, 'onFrameworkResponse'));
+$container->setParameter('routes', $routes);
 
 // Initialize framework and give it the request to handle
-$framework = new SGFramework($dispatcher, $matcher, $resolver);
+$framework = $container->get('framework');
 
 // Add HTTP Caching
 $framework = new HttpCache($framework, new Store(__DIR__.'/../app/cache'));
 
+// Handle request
 $response = $framework->handle($request);
 
 /***************************************
