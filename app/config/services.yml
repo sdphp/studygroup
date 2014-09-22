@@ -4,9 +4,36 @@ parameters:
 services:
     person_driver.class:
         class: \SDPHP\StudyGroup07\Person
-        arguments: ["Joe", "driver"]
+        arguments: ["Juan", "driver"]
     car:
         class: \SDPHP\StudyGroup07\Car
         arguments: ["%car.make%", "%car.size%"]
         calls:
             - [addPerson, ["@person_driver.class"] ]
+    hello_translation.controller:
+        class: \SDPHP\StudyGroup08\Controller\HelloWorldController
+
+    context:
+        class: \Symfony\Component\Routing\RequestContext
+    matcher:
+        class: \Symfony\Component\Routing\Matcher\UrlMatcher
+        arguments: ["%routes%", "@context"]
+    resolver:
+        class: \SDPHP\SGFramework\Controller\ControllerResolver
+        arguments: ["@service_container"]
+    listener.router:
+        class: \Symfony\Component\HttpKernel\EventListener\RouterListener
+        arguments: ["@matcher"]
+    subscriber.modify_default:
+        class: \SDPHP\StudyGroup08\Event\ModifyDefaultSubscriber
+    subscriber.before_after:
+        class: \SDPHP\StudyGroup08\Event\BeforeAfterSubscriber
+    dispatcher:
+        class: \Symfony\Component\EventDispatcher\EventDispatcher
+        calls:
+             - [addSubscriber, ["@listener.router"]]
+             - [addSubscriber, ["@subscriber.modify_default"]]
+             - [addSubscriber, ["@subscriber.before_after"]]
+    framework:
+        class: \SDPHP\SGFramework\SGFramework
+        arguments: ["@dispatcher", "@service_container", "@resolver"]
