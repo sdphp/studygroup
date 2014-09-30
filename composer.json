@@ -10,7 +10,8 @@
         "symfony/yaml":                 "~2.5",
         "symfony/dependency-injection": "~2.5",
         "phpunit/phpunit":              "~4.2",
-        "phpunit/php-code-coverage":    "~2.0"
+        "phpunit/php-code-coverage":    "~2.0",
+        "twig/twig":                    "~1.15"
     },
     "autoload": {
         "psr-4": {
