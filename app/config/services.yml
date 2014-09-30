@@ -1,6 +1,9 @@
 parameters:
     car.make: Ford
     car.size: 4
+    template.path: /vagrant/studygroup/src/SDPHP/StudyGroup08/Resources/views
+    tempalte.cache:
+        - cache: /vagrant/studygroup/src/app/cache
 services:
     person_driver.class:
         class: \SDPHP\StudyGroup07\Person
@@ -12,6 +15,7 @@ services:
             - [addPerson, ["@person_driver.class"] ]
     hello_translation.controller:
         class: \SDPHP\StudyGroup08\Controller\HelloWorldController
+        arguments: ["@twig_environment"]
 
     context:
         class: \Symfony\Component\Routing\RequestContext
@@ -32,8 +36,17 @@ services:
         class: \Symfony\Component\EventDispatcher\EventDispatcher
         calls:
              - [addSubscriber, ["@listener.router"]]
-             - [addSubscriber, ["@subscriber.modify_default"]]
              - [addSubscriber, ["@subscriber.before_after"]]
+#             - [addSubscriber, ["@subscriber.modify_default"]]
     framework:
         class: \SDPHP\SGFramework\SGFramework
         arguments: ["@dispatcher", "@service_container", "@resolver"]
+
+    # load twig
+    twig_loader:
+        class: \Twig_Loader_Filesystem
+        arguments: ["%template.path%"]
+
+    twig_environment:
+        class: \Twig_Environment
+        arguments: ["@twig_loader", "%tempalte.cache%"]
