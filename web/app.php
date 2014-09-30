@@ -17,6 +17,7 @@
 require_once "../vendor/autoload.php";
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\Routing;
 use Symfony\Component\Routing\Loader\YamlFileLoader as RoutingLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader as ServiceLoader;
