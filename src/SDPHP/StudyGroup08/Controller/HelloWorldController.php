@@ -36,6 +36,16 @@ class HelloWorldController
         'SW' => 'Hujambo dunia',                //Swahili
         'IT' => 'Ciao mondo'                    //Italian
     );
+    /**
+     * @var
+     */
+    private $twig;
+
+    public function __construct(\Twig_Environment $twig)
+    {
+
+        $this->twig = $twig;
+    }
 
     /**
      * @todo must implement
@@ -59,7 +69,14 @@ class HelloWorldController
             $language = htmlspecialchars($rawLanguage, ENT_QUOTES, 'UTF-8');
         }
 
-        $greeting = $this->getGreeting($language);
+        /**
+         * @TODO refactor
+         */
+        $translation = $this->getGreeting($language);
+        $template = $this->twig->loadTemplate('translation.html.twig');
+        $greeting = $template->render(array(
+            'translation' => $translation
+        ));
 
         if ($greeting) {
             $response = new Response(
